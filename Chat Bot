@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Sleep Chat BOT </title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    .chat-container {
+        width: 300px;
+        margin: 50px auto;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .chat-header {
+        padding: 10px;
+        background-color: #4CAF50;
+        color: #fff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .chat-body {
+        padding: 10px;
+        overflow-y: scroll;
+        height: 200px;
+    }
+    .message {
+        background-color: #e0e0e0;
+        padding: 8px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+    }
+    .user-message {
+        background-color: #2979FF;
+        color: #fff;
+    }
+    .bot-message {
+        background-color: #FFC107;
+    }
+    .chat-footer {
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        background-color: #f9f9f9;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    .input-message {
+        width: 200px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    .send-button {
+        padding: 5px 15px;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header"> Sleep Chat BOT </div>
+    <div class="chat-body" id="chat-body">
+        <div class="message bot-message">Hello! How can I assist you?</div>
+    </div>
+    <div class="chat-footer">
+        <input type="text" class="input-message" id="user-input" placeholder="Type a message...">
+        <button class="send-button" id="send-button">Send</button>
+    </div>
+</div>
+
+<script>
+    const chatBody = document.getElementById('chat-body');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', sendMessage);
+
+    function sendMessage() {
+        const userMessage = userInput.value;
+        if (userMessage.trim() === '') return;
+
+        appendMessage(userMessage, 'user-message');
+        // Simulate bot reply
+        setTimeout(() => {
+            appendMessage('Hello!', 'bot-message');
+        }, 500);
+        userInput.value = '';
+    }
+
+    function appendMessage(message, className) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', className);
+        messageElement.innerText = message;
+        chatBody.appendChild(messageElement);
+        chatBody.scrollTop = chatBody.scrollHeight; // Auto scroll to bottom
+    }
+</script>
+
+</body>
+</html>
