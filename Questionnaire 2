@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تقييم النوم</title>
+  <style>
+    body {
+      background: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #notebook {
+      width: 400px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+      position: relative;
+    }
+    .arrow {
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .arrow.left {
+      left: 10px;
+    }
+    .arrow.right {
+      right: 10px;
+    }
+    .options {
+      display: flex;
+      justify-content: center;
+    }
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    button.no {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    button.yes {
+      background-color: #28a745;
+      color: #fff;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 20px;
+      border-radius: 10px;
+    }
+    #result.success {
+      background-color: #28a745;
+      color: #fff;
+    }
+    #result.error {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    #sendBtn, #resetBtn {
+      display: none;
+      margin-top: 20px;
+      background-color: black;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    #sendBtn:hover, #resetBtn:hover {
+      background-color: #333;
+    }
+    #replay {
+      display: none;
+      margin-top: 20px;
+    }
+    #replayBtn {
+      background-color: black;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    #replayBtn:hover {
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div id="notebook">
+    <div class="arrow left" onclick="previousQuestion()">&#10094;</div>
+    <div class="question">1. هل تجد صعوبة في النوم أو البقاء مستيقظًا أثناء الليل؟</div>
+    <div class="arrow right" onclick="nextQuestion(true)">&#10095;</div>
+    <div class="options">
+      <button class="yes" onclick="nextQuestion(true)">نعم</button>
+      <button class="no" onclick="nextQuestion(false)">لا</button>
+    </div>
+    <div id="result"></div>
+    <button id="sendBtn" onclick="showResult()">إرسال</button>
+    <button id="resetBtn" onclick="resetQuestionnaire()">إعادة التعبئة</button>
+    <div id="replay">
+      <button id="replayBtn" onclick="replay()">إعادة الاختبار</button>
+    </div>
+  </div>
+
+  <script>
+    let currentQuestion = 1;
+    let answers = [];
+
+    function nextQuestion(answer) {
+      answers.push(answer);
+      currentQuestion++;
+      if (currentQuestion <= 10) {
+        document.querySelector('.question').innerHTML = currentQuestion + '. ' + getQuestion(currentQuestion);
+      }
+      if (currentQuestion === 11) {
+        document.getElementById('sendBtn').style.display = 'block';
+      }
+    }
+
+    function previousQuestion() {
+      if (currentQuestion > 1) {
+        currentQuestion--;
+        document.querySelector('.question').innerHTML = currentQuestion + '. ' + getQuestion(currentQuestion);
+        document.getElementById('sendBtn').style.display = 'none'; /* Hide send button when navigating back */
+      }
+    }
+
+    function getQuestion(number) {
+      switch (number) {
+        case 2:
+          return 'هل تستيقظ كثيرًا خلال الليل وتجد صعوبة في العودة إلى النوم؟';
+        case 3:
+          return 'هل تعاني من اضطراب توقف التنفس أثناء النوم؟';
+        case 4:
+          return 'هل تعاني من الشخير المستمر أثناء النوم؟';
+        case 5:
+          return 'هل تشعر بالنعاس المفرط خلال النهار دون سبب واضح؟';
+        case 6:
+          return 'هل تجد صعوبة في البقاء مستيقظًا خلال النهار؟';
+        case 7:
+          return 'هل تجد صعوبة في النوم في الأوقات المعتادة؟';
+        case 8:
+          return 'هل تشعر بالنعاس المفرط خلال النهار واليقظة المفرطة ليلا؟';
+        case 9:
+          return 'هل تعاني من حالات تسبب لك الحركة بشكل غير طبيعي أثناء النوم، مثل النطق أو الرعشة؟';
+        case 10:
+         return 'هل تعاني من حالات تضعف فيها حدود بين الاستيقاظ والنوم، مثل الأحلام الواقعية المخيفة أو الهلوسات أثناء النوم؟';
+        default:
+          return '';
+      }
+    }
+
+    function showResult() {
+      let result = document.getElementById('result');
+      let sendBtn = document.getElementById('sendBtn');
+      let notebook = document.getElementById('notebook');
+      let replay = document.getElementById('replay');
+      
+      let insomnia = [1, 2]; // Question numbers for insomnia disorder
+      let sleepBreathing = [3, 4]; // Question numbers for sleep breathing disorder
+      let hypersomnolence = [5, 6]; // Question numbers for hypersomnolence disorder
+      let sleepWakeCycle = [7, 8]; // Question numbers for sleep-wake cycle disorder
+      let behavioralProblems = [9, 10]; // Question numbers for behavioral problems disorder
+
+      let disorders = []; // Array to store detected disorders
+
+      // Check if any two questions for each type are answered yes
+      if (checkDisorder(insomnia)) {
+        disorders.push('اضطراب الأرق');
+      }
+      if (checkDisorder(sleepBreathing)) {
+        disorders.push('اضطراب التنفس أثناء النوم');
+      }
+      if (checkDisorder(hypersomnolence)) {
+        disorders.push('اضطراب النعاس المفرط');
+      }
+      if (checkDisorder(sleepWakeCycle)) {
+        disorders.push('اضطراب دورة النوم واليقظة');
+      }
+      if (checkDisorder(behavioralProblems)) {
+        disorders.push('اضطرابات السلوك أثناء النوم');
+      }
+
+      if (disorders.length > 0) {
+        result.innerHTML = ' : تعاني  من  <br>' + disorders.join('<br>');
+        result.classList.add('success');
+      } else {
+        result.innerHTML = 'لا تعاني من أي اضطراب في النوم.';
+        result.classList.add('error');
+      }
+      sendBtn.style.display = 'none'; /* Hide send button after result */
+      notebook.style.paddingBottom = '40px'; /* Add some space at the bottom for result */
+      replay.style.display = 'block'; /* Show replay section */
+    }
+
+    function checkDisorder(questions) {
+      return answers[questions[0] - 1] && answers[questions[1] - 1];
+    }
+
+    function resetQuestionnaire() {
+      currentQuestion = 1;
+      answers = [];
+      document.querySelector('.question').innerHTML = '1. هل تجد صعوبة في النوم أو البقاء مستيقظًا أثناء الليل؟';
+      document.getElementById('result').innerHTML = ''; /* Clear result box */
+      document.getElementById('sendBtn').style.display = 'none'; /* Hide send button again */
+      document.getElementById('notebook').style.paddingBottom = '20px'; /* Reset padding */
+      document.getElementById('replay').style.display = 'none'; /* Hide replay section */
+    }
+
+    function replay() {
+      resetQuestionnaire();
+    }
+
+    // Initial question
+    document.querySelector('.question').innerHTML = '1. هل تجد صعوبة في النوم أو البقاء مستيقظًا أثناء الليل؟';
+  </script>
+</body>
+</html>
