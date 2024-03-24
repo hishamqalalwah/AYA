@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تقييم النوم</title>
+  <style>
+    body {
+      background: none; /* Remove white background */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #notebook {
+      width: 400px;
+      background-color: #fff; /* White background for notebook */
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Shadow effect */
+      text-align: center;
+      position: relative; /* Add relative positioning */
+    }
+    .question {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333; /* Dark text color */
+    }
+    .options {
+      display: flex;
+      justify-content: center;
+    }
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    button.no {
+      background-color: #dc3545; /* Red color for No button */
+      color: #fff;
+    }
+    button.yes {
+      background-color: #28a745; /* Green color for Yes button */
+      color: #fff;
+    }
+    button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: #333; /* Dark text color */
+    }
+    .arrow.left {
+      left: 10px;
+      pointer-events: none; /* Disable click events */
+    }
+    .arrow.right {
+      right: 10px;
+      pointer-events: none; /* Disable click events */
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 20px;
+      border-radius: 10px;
+    }
+    #result.success {
+      background-color: #28a745; /* Green background for success */
+      color: #fff;
+    }
+    #result.error {
+      background-color: #dc3545; /* Red background for error */
+      color: #fff;
+    }
+    #sendBtn, #resetBtn {
+      display: none; /* Hide send button and reset button initially */
+      margin-top: 20px;
+      background-color: black; /* Black color for sending button */
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    #sendBtn:hover, #resetBtn:hover {
+      background-color: #333; /* Darker black on hover */
+    }
+    #replay {
+      display: none; /* Hide replay section initially */
+      margin-top: 20px;
+    }
+    #replayBtn {
+      background-color: black; /* Black color for replay button */
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 18px;
+    }
+    #replayBtn:hover {
+      background-color: #333; /* Darker black on hover */
+    }
+  </style>
+</head>
+<body>
+  <div id="notebook">
+    <div class="arrow left">&#10094;</div> <!-- Arrow for previous question -->
+    <div class="question">1. هل تعاني غالبًا من صعوبة في النوم ليلاً؟</div>
+    <div class="options">
+      <button class="yes" onclick="nextQuestion(true)">نعم</button>
+      <button class="no" onclick="nextQuestion(false)">لا</button>
+    </div>
+    <div class="arrow right">&#10095;</div> <!-- Arrow for next question -->
+    <div id="result"></div>
+    <button id="sendBtn" onclick="showResult()">إرسال</button>
+    <button id="resetBtn" onclick="resetQuestionnaire()">إعادة التعبئة</button>
+    <div id="replay">
+      <button id="replayBtn" onclick="replay()">إعادة الاختبار</button>
+    </div>
+  </div>
+
+  <script>
+    let currentQuestion = 1;
+    let answers = [];
+
+    function nextQuestion(answer) {
+      answers.push(answer);
+      currentQuestion++;
+      if (currentQuestion <= 6) {
+        document.querySelector('.question').innerHTML = currentQuestion + '. ' + getQuestion(currentQuestion);
+      }
+      if (currentQuestion === 7) {
+        document.getElementById('sendBtn').style.display = 'block'; /* Show send button after finishing questions */
+      }
+    }
+
+    function previousQuestion() {
+      if (currentQuestion > 1) {
+        currentQuestion--;
+        document.querySelector('.question').innerHTML = currentQuestion + '. ' + getQuestion(currentQuestion);
+        document.getElementById('sendBtn').style.display = 'none'; /* Hide send button when navigating back */
+      }
+    }
+
+    function getQuestion(number) {
+      switch (number) {
+        case 2:
+          return 'هل تستيقظ كثيرًا خلال الليل وتجد صعوبة في العودة إلى النوم؟';
+        case 3:
+          return 'هل تشعر بالتعب أو النعاس خلال النهار بشكل متكرر، حتى إذا كنت قد نمت بشكل جيد ليلاً؟';
+        case 4:
+          return 'هل استيقظت يومًا ما بالاختناق أو التخنيق خلال الليل؟';
+        case 5:
+             return 'هل وجدت نفسك تغفو عن طريق الخطأ خلال النهار، على سبيل المثال أثناء مشاهدة التلفزيون؟';
+        case 6:
+          return 'هل تعاني من صعوبة التركيز أو تذكر الأشياء بسبب النعاس خلال النهار؟';
+        default:
+          return '';
+      }
+    }
+
+    function showResult() {
+      let result = document.getElementById('result');
+      let sendBtn = document.getElementById('sendBtn');
+      let notebook = document.getElementById('notebook');
+      let replay = document.getElementById('replay');
+      if (answers.every(answer => answer === true) || answers.filter(answer => answer === true).length >= 2) {
+        result.innerHTML = 'تعاني من اضطراب في النوم.';
+        result.classList.add('success');
+      } else {
+        result.innerHTML = 'لا تعاني من اضطراب في النوم.';
+        result.classList.add('error');
+      }
+      sendBtn.style.display = 'none'; /* Hide send button after result */
+      notebook.style.paddingBottom = '40px'; /* Add some space at the bottom for result */
+      replay.style.display = 'block'; /* Show replay section */
+    }
+
+    function resetQuestionnaire() {
+      currentQuestion = 1;
+      answers = [];
+      document.querySelector('.question').innerHTML = '1. هل تعاني غالبًا من صعوبة في النوم ليلاً؟';
+      document.getElementById('result').innerHTML = ''; /* Clear result box */
+      document.getElementById('sendBtn').style.display = 'none'; /* Hide send button again */
+      document.getElementById('notebook').style.paddingBottom = '20px'; /* Reset padding */
+      document.getElementById('replay').style.display = 'none'; /* Hide replay section */
+    }
+
+    function replay() {
+      resetQuestionnaire();
+    }
+  </script>
+</body>
+</html>
